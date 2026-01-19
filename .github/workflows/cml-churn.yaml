@@ -3,7 +3,7 @@ on: [push]
 jobs:
   run:
     runs-on: [ubuntu-latest]
-    container: docker://dvcorg/cml-py3:0.9.1
+    container: docker://dvcorg/cml:0.14.0
     steps:
       - uses: actions/checkout@v3
         with:
