@@ -4,14 +4,16 @@ on:
   pull_request:
     types: [opened, synchronize]
 
-
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
   run:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
+
+    env:
+      REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     container:
       image: ghcr.io/iterative/cml:latest
@@ -27,8 +29,11 @@ jobs:
       - name: Train model
         run: python script.py
 
-      - name: Publish metrics and plots
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug PR info
         run: |
-          cml comment create --publish conf_matrix.png < metrics.txt 
+          echo "EVENT NAME: ${{ github.event_name }}"
+          echo "PR NUMBER: ${{ github.event.pull_request.number }}"
+
+      - name: Publish metrics and plots
+        run: |
+          cml comment create --publish conf_matrix.png < metrics.txt
