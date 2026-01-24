@@ -43,7 +43,7 @@ jobs:
           body: "Release created automatically from push."
 
       - name: Upload Confusion Matrix
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v1 
         with:
           files: conf_matrix.png
         env:
