@@ -1,13 +1,8 @@
 name: Churn Model Training
 
 on:
-  push:
-    branches:
-      - dev
   pull_request:
     types: [opened, synchronize]
-
-
 
 permissions:
   contents: write
@@ -15,6 +10,7 @@ permissions:
 
 jobs:
   run:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     container:
@@ -35,4 +31,4 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cml comment create --publish conf_matrix.png < metrics.txt 
+          cml comment create --publish conf_matrix.png < metrics.txt
