@@ -1,10 +1,12 @@
 name: Churn Model Training
 
-on: [push]
+on:
+  push:
+    branches:
+      - dev   # ou la branche que tu utilises
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   run:
@@ -24,8 +26,17 @@ jobs:
       - name: Train model
         run: python script.py
 
-      - name: Publish metrics and plots
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.sha }}
+          name: Release ${{ github.sha }}
+          body: "Release created automatically from push."
+
+      - name: Upload Confusion Matrix
+        uses: softprops/action-gh-release@v1
+        with:
+          files: conf_matrix.png
         env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cml comment create --publish conf_matrix.png < metrics.txt
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
