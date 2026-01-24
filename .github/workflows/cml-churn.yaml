@@ -3,7 +3,7 @@ name: Churn Model Training
 on:
   push:
     branches:
-      - main
+      - dev
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ghcr.io/iterative/cml:latest
+      image: docker://dvcorg/cml-py3:latest
 
     steps:
       - uses: actions/checkout@v3
