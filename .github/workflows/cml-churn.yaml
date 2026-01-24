@@ -1,8 +1,12 @@
 name: Churn Model Training
 
 on:
+  push:
+    branches:
+      - dev
   pull_request:
     types: [opened, synchronize]
+
 
 
 permissions:
