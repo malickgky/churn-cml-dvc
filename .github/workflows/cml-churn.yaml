@@ -3,7 +3,7 @@ name: Churn Model Training
 on:
   push:
     branches:
-      - dev   # ou la branche que tu utilises
+      - main
 
 permissions:
   contents: write
@@ -26,12 +26,20 @@ jobs:
       - name: Train model
         run: python script.py
 
+      - name: Check if conf_matrix exists
+        run: |
+          ls -la
+          test -f conf_matrix.png
+
+      - name: Set release tag
+        run: echo "TAG=release-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.sha }}
-          name: Release ${{ github.sha }}
+          tag: ${{ env.TAG }}
+          name: Release ${{ env.TAG }}
           body: "Release created automatically from push."
 
       - name: Upload Confusion Matrix
