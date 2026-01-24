@@ -1,22 +1,31 @@
 name: Churn Model Training
+
 on: [push]
+
 jobs:
   run:
-    runs-on: [ubuntu-latest]
-    container: docker://dvcorg/cml:0.14.0
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/iterative/cml:latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Setup Python
+
+      - name: Upgrade pip & install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Train model
         run: |
           python script.py
+
       - name: Publish metrics and plots
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cml comment create --publish conf_matrix.png < metrics.txt 
+          cml comment create --publish conf_matrix.png < metrics.txt
