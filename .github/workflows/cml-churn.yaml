@@ -1,19 +1,17 @@
 name: Churn Model Training
 
-on:
-  push:
-    branches:
-      - dev
+on: [push]
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   run:
     runs-on: ubuntu-latest
 
     container:
-      image: docker://dvcorg/cml-py3:latest
+      image: ghcr.io/iterative/cml:latest
 
     steps:
       - uses: actions/checkout@v3
@@ -26,25 +24,8 @@ jobs:
       - name: Train model
         run: python script.py
 
-      - name: Check if conf_matrix exists
-        run: |
-          ls -la
-          test -f conf_matrix.png
-
-      - name: Set release tag
-        run: echo "TAG=release-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ env.TAG }}
-          name: Release ${{ env.TAG }}
-          body: "Release created automatically from push."
-
-      - name: Upload Confusion Matrix
-        uses: softprops/action-gh-release@v1 
-        with:
-          files: conf_matrix.png
+      - name: Publish metrics and plots
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cml comment create --publish conf_matrix.png < metrics.txt
