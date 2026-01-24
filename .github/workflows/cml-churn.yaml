@@ -36,4 +36,4 @@ jobs:
 
       - name: Publish metrics and plots
         run: |
-          cml comment create --publish conf_matrix.png < metrics.txt
+          cml comment create --publish conf_matrix.png < metrics.txt  
