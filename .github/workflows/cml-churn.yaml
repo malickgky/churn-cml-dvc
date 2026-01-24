@@ -31,4 +31,4 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cml comment create --publish conf_matrix.png < metrics.txt
+          cml comment create --publish conf_matrix.png < metrics.txt 
