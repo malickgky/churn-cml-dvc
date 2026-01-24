@@ -2,6 +2,10 @@ name: Churn Model Training
 
 on: [push]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -10,25 +14,15 @@ jobs:
       image: ghcr.io/iterative/cml:latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
 
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
-          apt-get update
-          apt-get install -y python3-dev build-essential
-
-      - name: Upgrade pip & install dependencies
-        run: |
-          python --version
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -r requirements.txt --no-cache-dir
 
       - name: Train model
-        run: |
-          python script.py
+        run: python script.py
 
       - name: Publish metrics and plots
         env:
